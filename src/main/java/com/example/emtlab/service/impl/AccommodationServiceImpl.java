@@ -69,7 +69,7 @@ public class AccommodationServiceImpl implements AccommodationService {
         Accommodation accommodation = findById(id).orElseThrow(InvalidAccommodationIdException::new);
         if(accommodation.getNumRooms() == 0)
             throw new NoAvailableRooms();
-        accommodation.setNumRooms(0);
+        accommodation.setNumRooms(accommodation.getNumRooms()-1);
         accommodationRepository.save(accommodation);
         return Optional.of(accommodation);
     }

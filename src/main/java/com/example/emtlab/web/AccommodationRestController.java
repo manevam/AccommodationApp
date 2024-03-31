@@ -2,6 +2,7 @@ package com.example.emtlab.web;
 
 import com.example.emtlab.model.Accommodation;
 import com.example.emtlab.model.dto.AccommodationDto;
+import com.example.emtlab.model.exceptions.NoAvailableRooms;
 import com.example.emtlab.service.AccommodationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +53,17 @@ public class AccommodationRestController {
         return accommodationService.edit(id, accDto.getName(), accDto.getCategory(), accDto.getHostId(), accDto.getNumRooms())
                 .map(acc -> ResponseEntity.ok().body(acc))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/bookRoom/{id}")
+    public ResponseEntity<Accommodation> bookRoomInAccommodation (@PathVariable Long id)
+    {
+        try {
+            return accommodationService.rentedAccommodation(id)
+                    .map(acc -> ResponseEntity.ok().body(acc))
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (NoAvailableRooms e) {
+            throw new RuntimeException(e);
+        }
     }
 }
